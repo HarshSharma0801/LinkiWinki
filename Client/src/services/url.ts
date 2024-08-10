@@ -1,6 +1,6 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = "https://linkiwinki.onrender.com";
 
 interface link {
   username: string;
@@ -11,6 +11,19 @@ interface updatedLink {
   link: string;
   shortId: string;
 }
+
+
+export const InVokeApi = async () => {
+  try {
+    const { data } = await axios.get("/");
+    if (data) {
+      return data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 export const GetUrls = async (username: string) => {
   try {

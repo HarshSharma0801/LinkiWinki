@@ -1,5 +1,7 @@
 import { Navbar } from "./Navbar";
 import { useState } from "react";
+import { useEffect } from "react";
+import { InVokeApi } from "../services/url";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { createURL } from "../services/url";
@@ -10,6 +12,10 @@ const Home = () => {
   const navigate = useNavigate();
   const [original_url, setOriginalUrl] = useState<string | null>(null);
 
+  useEffect(() => {
+    toast("Please wait for 1 min and then try currently at free tier at Render ! or try again ")
+    InVokeApi();
+  }, []);
   const createMutation = useMutation({
     mutationFn: createURL,
     mutationKey: ["url"],

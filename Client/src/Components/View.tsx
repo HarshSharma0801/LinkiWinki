@@ -187,12 +187,12 @@ const View = () => {
 
         <div className="w-full flex-col flex gap-4 px-12">
           <div className="flex w-full rounded-[16px] font-[600] border-slate-300 bg-slate-200 p-6">
-            <div className="text-left w-[40%] ">Shorten Link</div>
-            <div className="text-left w-[20%] ">Original Link</div>
-            <div className="text-left w-[14%] ">Click Counts</div>
-            <div className="text-left w-[14%] ">QR Counts</div>
-            <div className="text-left w-[14%] ">Edit</div>
-            <div className="text-left w-[14%]">View QR</div>
+            <div className="text-left w-[50%] ">Shorten Link</div>
+            <div className="text-left w-[18%] ">Original Link</div>
+            <div className="text-left w-[12%] ">Click Counts</div>
+            <div className="text-left w-[12%] ">QR Counts</div>
+            <div className="text-left w-[12%] ">Edit</div>
+            <div className="text-left w-[12%]">View QR</div>
           </div>
 
           {Links.length > 0 &&
@@ -200,7 +200,7 @@ const View = () => {
               return (
                 <>
                   <div className="flex w-full rounded-[16px] border-slate-300 bg-slate-100 p-6">
-                    <div className="text-left w-[40%] ">
+                    <div className="text-left w-[50%] ">
                       <a
                         href={data.shorten_url}
                         className="text-blue-500"
@@ -209,14 +209,14 @@ const View = () => {
                         {data.shorten_url}
                       </a>
                     </div>
-                    <div className="text-left w-[20%] ">
+                    <div className="text-left w-[18%] ">
                       {data.original_url.slice(0, 20)}...
                     </div>
-                    <div className="text-left w-[14%] ">
+                    <div className="text-left w-[12%] ">
                       {data.click_counts}
                     </div>
-                    <div className="text-left w-[14%] ">{data.qr_counts}</div>
-                    <div className="text-left w-[14%] ">
+                    <div className="text-left w-[12%] ">{data.qr_counts}</div>
+                    <div className="text-left w-[12%] ">
                       <button
                         onClick={() => {
                           setActiveLink(data);
@@ -228,7 +228,7 @@ const View = () => {
                         Edit
                       </button>
                     </div>
-                    <div className="text-left w-[14%]">
+                    <div className="text-left w-[12%]">
                       <button
                         onClick={() => {
                           FetchQRMutation.mutate(data.shorten_id);
