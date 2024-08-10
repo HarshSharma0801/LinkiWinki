@@ -12,11 +12,7 @@ const knexfile = {
   development: {
     client: 'pg',
     connection: {
-      host: 'localhost' ,
-      port: 5432 ,
-      user: process.env.DATABASEUSER,
-      password: process.env.PASSWORD,
-      database: process.env.DATABASENAME
+      connectionString:"postgres://default:sSc9EPgR6vOH@ep-white-bread-a43qrkm0.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require"
     },
     pool: {
       min: 2,
@@ -48,12 +44,8 @@ const knexfile = {
   production: {
     client: 'pg',
     connection: {
-      host: 'localhost' ,
-      port: 5432 ,
-      user: process.env.DATABASEUSER,
-      password: process.env.PASSWORD,
-      database: process.env.DATABASENAME
-    },
+      connectionString:"postgres://default:sSc9EPgR6vOH@ep-white-bread-a43qrkm0.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require"
+    },  
     pool: {
       min: 2,
       max: 10
