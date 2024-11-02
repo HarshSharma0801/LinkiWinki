@@ -1,0 +1,1 @@
+DROP links IF EXISTS
