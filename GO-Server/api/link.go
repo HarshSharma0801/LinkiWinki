@@ -2,11 +2,13 @@ package api
 
 import (
 	"Go-Server/sqlc"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/skip2/go-qrcode"
 )
 
 type CreateLinkReqParams struct {
@@ -52,13 +54,16 @@ func (server *Server) CreateLink(c *gin.Context) {
 		ShortenUrl:   data.ShortenUrl,
 	}
 
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, gin.H{
+		"valid":true,
+		"data":response,
+	})
 
 }
 
 type UpdateLinkReqParams struct {
-	ShortenID           string `json:"shorten_id,omitempty" ,binding:"required"`
-	OriginalLink string `json:"original_url,omitempty"`
+	ShortenID           string `json:"shortId,omitempty" ,binding:"required"`
+	OriginalLink string `json:"link,omitempty"`
 }
 
 type UpdateLinkResParams struct {
@@ -94,7 +99,10 @@ func (server *Server) UpdateLink(c *gin.Context) {
 		ShortenUrl:   data.ShortenUrl,
 	}
 
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, gin.H{
+		"valid":true,
+		"data":response,
+	})
 
 }
 
@@ -119,7 +127,10 @@ func (server *Server) ListLinks(c *gin.Context) {
 
 	}
 
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, gin.H{
+		"valid":   true,
+		"UrlData": data,
+	})
 
 }
 
@@ -175,4 +186,42 @@ func (server *Server) RedirectQRLink(c *gin.Context) {
 	}
 
 	c.Redirect(http.StatusFound, LinkData.OriginalUrl)
+}
+
+
+type GetQrParams struct {
+	ShortId string `form:"shortId,omitempty"`
+}
+
+func (server *Server) GetQr(c *gin.Context) {
+
+	var req GetQrParams
+
+	if err := c.ShouldBindQuery(&req) ; err !=nil{
+		c.JSON(http.StatusBadRequest, errorResponse(err.Error()))
+		return
+	}
+
+	data , err := server.store.GetLinkByShortId(c , req.ShortId)
+	if err !=nil{
+		c.JSON(http.StatusBadRequest, errorResponse(err.Error()))
+		return
+	}
+
+	url := fmt.Sprintf("%s/qr/%s" , server.config.Api_Url , data.ShortenID)
+
+	qrCode, err := qrcode.Encode(url, qrcode.Medium, 256)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"valid": false, "error": "failed to generate QR code"})
+		return
+	}
+
+	QRImage := base64.StdEncoding.EncodeToString(qrCode)
+
+	c.JSON(http.StatusOK , gin.H{
+		"valid":   true,
+		"QRImage": QRImage,
+	})
+
+
 }

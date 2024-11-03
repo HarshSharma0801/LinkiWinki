@@ -4,41 +4,44 @@ import (
 	"Go-Server/sqlc"
 	"Go-Server/util"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-
 type Server struct {
 	router *gin.Engine
-	store *sqlc.Store
+	store  *sqlc.Store
 	config util.Config
 }
 
+func NewServer(store *sqlc.Store, config util.Config) (*Server, error) {
 
-func NewServer(store *sqlc.Store , config util.Config) (*Server , error) {
-
-	server := &Server{store: store , config:config}
+	server := &Server{store: store, config: config}
 	router := gin.Default()
 
-	router.POST("/link" , server.CreateLink)
-	router.POST("/update/link" , server.UpdateLink)
-	router.GET("/link" , server.ListLinks)
-	router.GET("/:shorten_id" , server.RedirectLink)
-	router.GET("/qr/:shorten_id" , server.RedirectQRLink)
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		AllowCredentials: true,
+	}))
 
+	router.POST("/api/createUrl", server.CreateLink)
+	router.POST("/api/updateUrl", server.UpdateLink)
+	router.GET("/api/getUrls", server.ListLinks)
+	router.GET("/api/getQR", server.GetQr)
+	router.GET("/:shorten_id", server.RedirectLink)
+	router.GET("/qr/:shorten_id", server.RedirectQRLink)
 
 	server.router = router
 
-
-	return server , nil
+	return server, nil
 }
-
 
 func (server *Server) Start(address string) error {
 	return server.router.Run(address)
 }
 
-
 func errorResponse(err string) gin.H {
-	return gin.H{"error" : err}
+	return gin.H{"error": err}
 }
